@@ -17,12 +17,6 @@ class ClosestScanMarker(Node):
     def __init__(self):
         super().__init__('closest_scan_marker')
 
-      
-        self.declare_parameter('output_frame', 'odom')          # << publish in odom by default
-        self.declare_parameter('min_range', 0.02)
-        self.declare_parameter('max_range', 50.0)
-
-
         self.marker_pub = self.create_publisher(Marker, '/closest_obstacle_marker', 10)
         self.scan_sub = self.create_subscription(LaserScan, '/scan', self.on_scan, 1)
 
@@ -32,14 +26,20 @@ class ClosestScanMarker(Node):
 
     def on_scan(self, msg: LaserScan):
         
-        # Find closest reading and its angle
-        closest_range = min(msg.ranges)
-        closest_angle = msg.angle_min + msg.ranges.index(closest_range) * msg.angle_increment
+        print(len(msg.ranges))
+        
+        #################  START WRITING YOUR CODE HERE #################
+
+        # Find closest range reading and its angle
+        closest_range = 
+        closest_angle = 
 
         # Conver to (x,y) in scan frame
-        x = closest_range * math.cos(closest_angle)
-        y = closest_range * math.sin(closest_angle)
-        z = 0.0
+        x = 
+        y = 
+        z = 
+
+        ################# END OF WRITING YOUR CODE  #################
 
         point = PointStamped()
         point.header = msg.header  # source frame = scan's frame
@@ -50,6 +50,7 @@ class ClosestScanMarker(Node):
         target_frame = 'odom'
         source_frame = 'laser_link'
 
+        # transform laser point in laser link frame to odom frame
         try:
             transform = self.tf_buffer.lookup_transform(target_frame, source_frame, rclpy.time.Time())
             point = do_transform_point(point, transform)
