@@ -31,13 +31,13 @@ class ClosestScanMarker(Node):
         #################  START WRITING YOUR CODE HERE #################
 
         # Find closest range reading and its angle
-        closest_range = 
-        closest_angle = 
+        closest_range = 0
+        closest_angle = 0
 
         # Conver to (x,y) in scan frame
-        x = 
-        y = 
-        z = 
+        x = 0
+        y = 0
+        z = 0
 
         ################# END OF WRITING YOUR CODE  #################
 
@@ -50,9 +50,10 @@ class ClosestScanMarker(Node):
         target_frame = 'odom'
         source_frame = 'laser_link'
 
-        # transform laser point in laser link frame to odom frame
         try:
+            # get the transform laser point in laser link frame to odom frame
             transform = self.tf_buffer.lookup_transform(target_frame, source_frame, rclpy.time.Time())
+            #here we directly transofrm the pose into another pose for the given frame of reference
             point = do_transform_point(point, transform)
         except Exception as e:
             self.get_logger().warning(f"Failed to lookup transform: {str(e)}")
