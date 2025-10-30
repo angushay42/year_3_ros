@@ -46,6 +46,8 @@ class ColourContoursDetector(Node):
         # any hue (range: 0-255), but for something brightly
         # colours (high saturation: > 150)
         # provide the right range values for each BGR channel (set to red bright objects)
+        # Create mask for range of colours (HSV low values, HSV high values)
+        # Onine colour picker - https://redketchup.io/color-picker
         hsv_thresh = cv2.inRange(hsv_img,
                                  np.array((155, 25, 0)),
                                  np.array((179, 255, 255)))

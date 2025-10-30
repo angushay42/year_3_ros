@@ -42,6 +42,8 @@ class ColourContours(Node):
         # ... and now let's create a binary (mask) image, looking for 
         # any hue (range: 0-255), but for something brightly
         # colours (high saturation: > 150)
+        # Create mask for range of colours (HSV low values, HSV high values)
+        # Onine colour picker - https://redketchup.io/color-picker
         hsv_thresh = cv2.inRange(hsv_img,
                                  np.array((40, 100, 50)),
                                  np.array((80, 255, 255)))
