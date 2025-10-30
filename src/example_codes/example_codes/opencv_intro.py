@@ -8,7 +8,7 @@ cv2.namedWindow("original", cv2.WINDOW_NORMAL)
 cv2.namedWindow("blur", cv2.WINDOW_NORMAL)
 cv2.namedWindow("canny", cv2.WINDOW_NORMAL)
 
-img = cv2.imread('/home/mnwm5/KV6022_limo_ros2/src/example_codes/example_codes/road.jpg')
+img = cv2.imread('/home/student/KV6022_limo_ros2/src/example_codes/example_codes/road.jpg')
 if img is None:
     print("Could not open or find the image")
     exit(0)
