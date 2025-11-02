@@ -25,11 +25,6 @@ def generate_launch_description():
   spawn_y_val = '0.297'
   spawn_z_val = '0.0'
   spawn_yaw_val = '-1.54'
-
-  spawn_x_val = '0.0'
-  spawn_y_val = '0.0'
-  spawn_z_val = '0.0'
-  spawn_yaw_val = '0.0'
  
   ############ You do not need to change anything below this line #############
  
