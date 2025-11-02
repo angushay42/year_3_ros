@@ -222,6 +222,6 @@ try:
 except KeyboardInterrupt:
     pass
 
-rclpy.shutdown()
+#rclpy.shutdown()
     
 
