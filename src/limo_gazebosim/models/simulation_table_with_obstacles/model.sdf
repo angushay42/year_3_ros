@@ -521,106 +521,126 @@
 
 
     
-    <link name="side_1">      
+    <link name="side_1">  
+    <static>true</static>     
       <pose relative_to="floor">0.0 1.5 0.1 1.57079632679 0 0</pose>
       <collision name="collision">
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
         <surface>
           <friction>
             <ode>
-              <mu>100</mu>
-              <mu2>50</mu2>
+              <mu>0</mu>
+              <mu2>0</mu2>
             </ode>
           </friction>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+            <threshold>0.0</threshold>
+          </bounce>
         </surface>
       </collision>
       <visual name="visual">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+           <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
       </visual>
     </link>
-    <link name="side_2">      
+    <link name="side_2">   
+    <static>true</static>    
       <pose relative_to="floor">0.0 -1.5 0.1 1.57079632679 0 0</pose>
       <collision name="collision">
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
         <surface>
-          <friction>
+         <friction>
             <ode>
-              <mu>100</mu>
-              <mu2>50</mu2>
+              <mu>0</mu>
+              <mu2>0</mu2>
             </ode>
           </friction>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+            <threshold>0.0</threshold>
+          </bounce>
         </surface>
       </collision>
       <visual name="visual">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
       </visual>
     </link>
-    <link name="side_3">      
+    <link name="side_3">   
+    <static>true</static>    
       <pose relative_to="floor">1.5 0.0 0.1 1.57079632679 0 1.57079632679</pose>
       <collision name="collision">
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
         <surface>
           <friction>
             <ode>
-              <mu>100</mu>
-              <mu2>50</mu2>
+              <mu>0</mu>
+              <mu2>0</mu2>
             </ode>
           </friction>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+            <threshold>0.0</threshold>
+        </bounce>
         </surface>
       </collision>
       <visual name="visual">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
       </visual>
     </link>
-    <link name="side_4">      
+    <link name="side_4">   
+      <static>true</static>   
       <pose relative_to="floor">-1.5 0.0 0.1 1.57079632679 0 1.57079632679</pose>
       <collision name="collision">
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
         <surface>
           <friction>
             <ode>
-              <mu>100</mu>
-              <mu2>50</mu2>
+              <mu>0</mu>
+              <mu2>0</mu2>
             </ode>
           </friction>
+          <bounce>
+            <restitution_coefficient>0.0</restitution_coefficient>
+            <threshold>0.0</threshold>
+        </bounce>
         </surface>
       </collision>
       <visual name="visual">
         <cast_shadows>false</cast_shadows>
         <geometry>
           <box>
-            <size>3.05 0.3 0.05</size>
+            <size>3.05 0.3 0.15</size>
           </box>
         </geometry>
       </visual>
