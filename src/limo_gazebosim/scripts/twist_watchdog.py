@@ -6,10 +6,10 @@ from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
 class SendEmptyWatchdog(Node):
-    def __init__(self, datatype, topic, timeout=0.5, send_value=None):
+    def __init__(self, datatype, topic, timeout=65.0, send_value=None):
         super().__init__('TwistWatchDog')  
 
-        self.timeout = timeout
+        self.timeout = 65.0
         self.datatype = datatype
 
         if send_value is None:

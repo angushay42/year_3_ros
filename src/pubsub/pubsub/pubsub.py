@@ -10,6 +10,11 @@ MAX_VEL = 1.0
 R = v / w
 R is radius length? v is linear vel, w is angular vel
 R is length from ICC to centre of robot (P)
+w = v/r
+
+R = 0.5m
+v = 0.2m/s
+w = 0.2 / 0.5
 """
 
 """
@@ -22,27 +27,26 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('minimal_publisher')
-        self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.circle(0.5, 180, 0.2)
+        self.publisher_ = self.create_publisher(Twist, 'cmd_vel', 100)
+        self.circle(0.5, 180, 0.4)
         
         # timer_period = 0.1  # seconds
         # self.timer = self.create_timer(timer_period, self.timer_callback)
         # self.i = 0
 
-    def timer_callback(self):
-        # msg = String()
-        # msg.data = 'Hello World: %d' % self.i
-        # self.publisher_.publish(msg)
+    def move_1(self):
+        curr = time.time()
+        elapsed_time = curr - self.start_time
 
+        self.get_logger().info(f"Elapsed Time: {elapsed_time:.2f}s / Move Duration: {self.move_duration:.2f}s")
 
-        cmd_vel = Twist()
-        cmd_vel.linear.x = 0.2  # m/s
-        cmd_vel.angular.z = math.radians(90)
+        if elapsed_time >= self.move_duration:
+            self.timer.cancel()
+            self.get_logger().info("Movement complete.")
+            return
 
-        self.publisher_.publish(cmd_vel)
-        self.get_logger().info('Publishing: "%s"' % cmd_vel)
-
-        self.i += 1
+        self.publisher_.publish(self.st)
+        self.get_logger().info(f"Publishing: {self.st}")
 
     def circle(self, radius: float, start_dir: float, vel: float):
         if not (0 <= start_dir < 360):
@@ -54,41 +58,23 @@ class MinimalPublisher(Node):
         
         if radius == 0:
             raise TypeError("invalid radius")
-        
-        start_dir = math.radians(start_dir)
 
         # turn start_dir
         # drive forward from origin to radius
-        st = Twist()
-        st.linear.x = vel
-        st.angular.z = start_dir
+        self.st = Twist()
+        self.st.linear.x = vel
+        self.st.angular.z = vel / radius
+        # self.st.angular.z = 10.0
+
+        rate = 0.01 # publish rate
 
         # time = distance / speed
-        time_st = radius / vel
+        self.move_duration = ((2*math.pi * radius)/ vel) * 5.33
         
-        self.publisher_.publish(st)
-        self.get_logger().info('Publishing: "%s"' % st)
+        self.start_time = time.time()
 
-        # robot will move at vel speed and we will stop it 
-        # after t seconds, moving it d distance
-        time.sleep(time_st)
-
-        st.linear.x = 0.0
-        st.angular.z = 0.0
-
-        self.publisher_.publish(st)
-        self.get_logger().info('Publishing: "%s"' % st)
-
-        # calculate w as v/R
-        cir = Twist()
-        cir.linear.x = vel
-        cir.angular.z = math.radians(vel/radius)
-
-        # circumference = 2*pi*r, which is distance
-        self.publisher_.publish(cir)
-        self.get_logger().info('Publishing: "%s"' % cir)
-
-        time.sleep(2 * math.pi * radius)
+        # start timer
+        self.timer = self.create_timer(rate, self.move_1)
         
 
 def main(args=None):
