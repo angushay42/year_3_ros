@@ -10,7 +10,7 @@ def generate_launch_description():
     ld = LaunchDescription()
 
      # Specify the name of the package and path to map yaml file
-    pkg_name = 'KV6022_assessment'
+    pkg_name = 'limo_localisation'
     map_subpath = ''
     map_yaml_filepath = os.path.join(get_package_share_directory(pkg_name), map_subpath)
 
