@@ -1,0 +1,33 @@
+[0.352s] Invoking command in '/home/student/year_3_ros/src/limo_local': PYTHONPATH=/home/student/year_3_ros/src/limo_local/build/limo_local/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/limo_local build --build-base /home/student/year_3_ros/src/limo_local/build/limo_local/build install --record /home/student/year_3_ros/src/limo_local/build/limo_local/install.log --single-version-externally-managed install_data
+[0.495s] running egg_info
+[0.496s] creating build/limo_local/limo_local.egg-info
+[0.496s] writing build/limo_local/limo_local.egg-info/PKG-INFO
+[0.496s] writing dependency_links to build/limo_local/limo_local.egg-info/dependency_links.txt
+[0.496s] writing entry points to build/limo_local/limo_local.egg-info/entry_points.txt
+[0.496s] writing requirements to build/limo_local/limo_local.egg-info/requires.txt
+[0.496s] writing top-level names to build/limo_local/limo_local.egg-info/top_level.txt
+[0.496s] writing manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+[0.497s] reading manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+[0.497s] writing manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+[0.498s] running build
+[0.498s] running build_py
+[0.498s] creating /home/student/year_3_ros/src/limo_local/build/limo_local/build
+[0.498s] creating /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib
+[0.498s] creating /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local
+[0.498s] copying limo_local/__init__.py -> /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local
+[0.498s] running install
+[0.498s] running install_lib
+[0.499s] creating /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local
+[0.499s] copying /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local/__init__.py -> /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local
+[0.499s] byte-compiling /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local/__init__.py to __init__.cpython-310.pyc
+[0.499s] running install_data
+[0.499s] creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index
+[0.499s] creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index
+[0.500s] creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index/packages
+[0.500s] copying resource/limo_local -> /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index/packages
+[0.500s] copying package.xml -> /home/student/year_3_ros/src/limo_local/install/limo_local/share/limo_local
+[0.500s] running install_egg_info
+[0.501s] Copying build/limo_local/limo_local.egg-info to /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local-0.0.0-py3.10.egg-info
+[0.501s] running install_scripts
+[0.515s] writing list of installed files to '/home/student/year_3_ros/src/limo_local/build/limo_local/install.log'
+[0.529s] Invoked command in '/home/student/year_3_ros/src/limo_local' returned '0': PYTHONPATH=/home/student/year_3_ros/src/limo_local/build/limo_local/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base build/limo_local build --build-base /home/student/year_3_ros/src/limo_local/build/limo_local/build install --record /home/student/year_3_ros/src/limo_local/build/limo_local/install.log --single-version-externally-managed install_data

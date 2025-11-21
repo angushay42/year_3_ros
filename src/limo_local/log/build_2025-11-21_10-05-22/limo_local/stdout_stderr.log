@@ -1,0 +1,31 @@
+running egg_info
+creating build/limo_local/limo_local.egg-info
+writing build/limo_local/limo_local.egg-info/PKG-INFO
+writing dependency_links to build/limo_local/limo_local.egg-info/dependency_links.txt
+writing entry points to build/limo_local/limo_local.egg-info/entry_points.txt
+writing requirements to build/limo_local/limo_local.egg-info/requires.txt
+writing top-level names to build/limo_local/limo_local.egg-info/top_level.txt
+writing manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+reading manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+writing manifest file 'build/limo_local/limo_local.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/student/year_3_ros/src/limo_local/build/limo_local/build
+creating /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib
+creating /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local
+copying limo_local/__init__.py -> /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local
+running install
+running install_lib
+creating /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local
+copying /home/student/year_3_ros/src/limo_local/build/limo_local/build/lib/limo_local/__init__.py -> /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local
+byte-compiling /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local/__init__.py to __init__.cpython-310.pyc
+running install_data
+creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index
+creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index
+creating /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index/packages
+copying resource/limo_local -> /home/student/year_3_ros/src/limo_local/install/limo_local/share/ament_index/resource_index/packages
+copying package.xml -> /home/student/year_3_ros/src/limo_local/install/limo_local/share/limo_local
+running install_egg_info
+Copying build/limo_local/limo_local.egg-info to /home/student/year_3_ros/src/limo_local/install/limo_local/lib/python3.10/site-packages/limo_local-0.0.0-py3.10.egg-info
+running install_scripts
+writing list of installed files to '/home/student/year_3_ros/src/limo_local/build/limo_local/install.log'
