@@ -198,6 +198,13 @@ def generate_launch_description():
     name='twist_watchdog'
   )
 
+  # static_world_to_odom_publisher = Node(
+  #   package='tf2_ros',
+  #   executable='static_transform_publisher',
+  #   name='static_world_to_odom_publisher',
+  #   arguments=["0", "0", "0", "0", "0", "0", "/world", "/odom", "100"]
+  # ) 
+
   # Create the launch description and populate
   ld = LaunchDescription()
  
@@ -214,6 +221,8 @@ def generate_launch_description():
   ld.add_action(declare_use_simulator_cmd)
   ld.add_action(declare_world_cmd)
   ld.add_action(twist_watchdog)
+  #ld.add_action(static_world_to_odom_publisher)
+  
  
   # Add any actions
   ld.add_action(start_gazebo_server_cmd)
