@@ -10,6 +10,9 @@ class TrajectoryTrackingController(Node):
         self.waypoint = None
         self.robot_pose = None
 
+        # my stuff
+        self.err_threshold = 0.01
+
         self.subscription = self.create_subscription(
             Transform,
             '/waypoint_cmd',
@@ -32,7 +35,8 @@ class TrajectoryTrackingController(Node):
             trans = self.tf_buffer.lookup_transform(
                 'odom',
                 'base_footprint',
-                rclpy.time.Time())
+                rclpy.time.Time()
+            )
             self.robot_pose = trans
         except (LookupException, ConnectivityException, ExtrapolationException) as ex:
             self.get_logger().error(f"Transform error: {ex}")
@@ -46,7 +50,7 @@ class TrajectoryTrackingController(Node):
 
             q = self.robot_pose.transform.rotation
             theta = self.quaternion_to_yaw(q)
-            self.get_logger().info(f"Robot is believed to have orientation (theta): ({theta})")
+            self.get_logger().info(f"Robot is believed to have orientation (theta): ({math.degrees(theta)})")
 
         # Print current destination
         if self.waypoint:
@@ -58,11 +62,42 @@ class TrajectoryTrackingController(Node):
             wtheta = self.quaternion_to_yaw(wq)
             self.get_logger().info(f"Current waypoint (theta): ({wtheta})")
 
-        # DRIVE THE ROBOT HERE (dummy command)
-        motor_command = Twist()
-        motor_command.linear.x = 0.1  # ROS 2 expects smart values, not 0.1
-        motor_command.angular.z = 0.1
-        self.publisher.publish(motor_command)
+        # self.bangbang((x,y,theta), (wx, wy, wtheta))
+
+    def pose_diff(self, robot, wp, summ=False):
+        temp = (
+            math.dist([robot[0], robot[1]], [wp[0], wp[1]]),
+            wp[2] - robot[2]
+        )
+        return temp if not summ else sum(temp)
+    
+    def bangbang(self, robot, wp):
+        # if position or heading error is larger than threshold, drive
+        # if position is within threshold, stop
+        # so we need to get the next closest waypoint and calculate the error
+        # what is the diff between 
+
+        err = self.pose_diff(robot, wp, True)
+        self.get_logger().info(
+            "err: {}".format(err)
+        )
+
+        self.get_logger().info("err actual: {}".format(self.pose_diff(robot, wp)))
+
+        if err > self.err_threshold:
+            motor_command = Twist()
+            motor_command.linear.x = 0.1  # ROS 2 expects smart values, not 0.1
+            motor_command.angular.z = math.radians(-10)
+            self.publisher.publish(motor_command)
+        else:
+            return
+
+    def proportional(self):
+        pass
+
+    def kinematic_position(self):
+        pass
+
 
     @staticmethod
     def quaternion_to_yaw(q):
