@@ -30,18 +30,43 @@ class ObjectDetector(Node):
         super().__init__('detector')
         self.bridge = CvBridge()
 
-        self.camera_info_sub = self.create_subscription(CameraInfo, '/limo_camera/depth/camera_info', self.camera_info_callback, qos_profile=qos.qos_profile_sensor_data)
-        self.image_sub = self.create_subscription(Image, '/limo_camera/image', self.image_color_callback, 10)
-        self.image_sub = self.create_subscription(Image, '/limo_camera/depth/image_raw', self.image_depth_callback, 10)
+        # subscribe to topic, when given data call callback
+        # todo question, what is data? 
+        self.camera_info_sub = self.create_subscription(
+            CameraInfo, 
+            '/limo_camera/depth/camera_info', 
+            self.camera_info_callback, 
+            qos_profile=qos.qos_profile_sensor_data
+        )
+        self.image_sub = self.create_subscription(
+            Image, 
+            '/limo_camera/image', 
+            self.image_color_callback, 
+            10
+        )
+        self.image_sub = self.create_subscription(
+            Image, 
+            '/limo_camera/depth/image_raw', 
+            self.image_depth_callback, 
+            10
+        )
         
-        self.marker_array_pub = self.create_publisher(MarkerArray, '/limo/object_markers', 10)
+        self.marker_array_pub = self.create_publisher(
+            MarkerArray, 
+            '/limo/object_markers', 
+            10
+        )
 
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
 
     def get_tf_transform(self, target_frame, source_frame):
         try:
-            transform = self.tf_buffer.lookup_transform(target_frame, source_frame, rclpy.time.Time())
+            transform = self.tf_buffer.lookup_transform(
+                target_frame, 
+                source_frame, 
+                rclpy.time.Time()
+            )
             return transform
         except Exception as e:
             self.get_logger().warning(f"Failed to lookup transform: {str(e)}")
