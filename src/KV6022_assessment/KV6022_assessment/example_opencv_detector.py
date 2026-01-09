@@ -17,6 +17,9 @@ from cv_bridge import CvBridge, CvBridgeError
 from tf2_geometry_msgs import do_transform_pose
 from visualization_msgs.msg import Marker, MarkerArray
 
+# student imported libraries (mine!)
+import random
+
 class ObjectDetector(Node):
     camera_model = None
     image_depth_ros = None
@@ -28,25 +31,29 @@ class ObjectDetector(Node):
 
     def __init__(self):    
         super().__init__('detector')
+        print('starting init')
         self.bridge = CvBridge()
+
+        self.rp = None  # todo temp variable for testing
+        self.depth_val = -1
 
         # subscribe to topic, when given data call callback
         # todo question, what is data? 
         self.camera_info_sub = self.create_subscription(
             CameraInfo, 
-            '/limo_camera/depth/camera_info', 
+            '/limo_camera/depth/camera_info',   # sensor_msgs/msg/CameraInfo
             self.camera_info_callback, 
             qos_profile=qos.qos_profile_sensor_data
         )
         self.image_sub = self.create_subscription(
             Image, 
-            '/limo_camera/image', 
+            '/limo_camera/image',               # sensor_msgs/msg/Image
             self.image_color_callback, 
             10
         )
         self.image_sub = self.create_subscription(
             Image, 
-            '/limo_camera/depth/image_raw', 
+            '/limo_camera/depth/image_raw',     # sensor_msgs/msg/Image
             self.image_depth_callback, 
             10
         )
@@ -59,6 +66,7 @@ class ObjectDetector(Node):
 
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
+        print('finished init')
 
     def get_tf_transform(self, target_frame, source_frame):
         try:
@@ -73,14 +81,23 @@ class ObjectDetector(Node):
             return None
     
     def camera_info_callback(self, data):
+        print('camera info callback')
         if not self.camera_model:
             self.camera_model = image_geometry.PinholeCameraModel()
         self.camera_model.fromCameraInfo(data)
 
     def image_depth_callback(self, data):
-        self.image_depth_ros = data
+        print('image depth callback')
 
-    def image_color_callback(self, data):
+        self.image_depth_ros: Image = data
+        if self.rp:
+            self.depth_val = self.image_depth_ros.data[
+                    (self.rp[1] * self.image_depth_ros.width) + self.rp[0]
+                ]
+
+    def image_color_callback(self, data: Image):
+        print('image colour callback')
+
         # wait for camera_model and depth image to arrive
         if self.camera_model is None:
             return
@@ -97,7 +114,44 @@ class ObjectDetector(Node):
 
 
         # PROVIDE YOUR OBJECT DETECTION CODE HERE
+        cx, cy = self.camera_model.cx(), self.camera_model.cy()
+        cx, cy = self.camera_model.rectifyPoint((cx, cy))
+
+        # get random valid point, need height and width
+        if not self.rp:
+            self.rp = (
+                random.randint(0, self.image_depth_ros.width-1),
+                285
+                # random.randint((self.image_depth_ros.height-1) // 2, self.image_depth_ros.height-1),
+            )
+        _args = [
+            # self.camera_model.projectPixelTo3dRay((cx, cy))
+            f"x: {self.rp[0]}",
+            f"y: {self.rp[1]}",
+            f"depth: {image_depth[self.rp[1], self.rp[0]]}"
+        ]
+        print(
+            ("=" * 50) 
+            + ("{}, " * len(_args)).format(*_args) 
+            + ("="*50)
+        )
+        
+        """
+        Super brief epic super simple swag soodough code
+        get image
+        find contours
+        find centre of contour (moments)
+        projectpixel to 3d
+        map centre pixel from image to depth image
+
+
+        """
+
+        cv2.circle(image_depth, self.rp, 5, (0, 0, 255) , 2)
       
+        cv2.imshow("colour image", image_color)
+        cv2.imshow("detection mask", image_depth)
+        cv2.waitKey(1)
         
         
         object_location_map = PoseStamped()
@@ -123,8 +177,13 @@ class ObjectDetector(Node):
 def main(args=None):
     print('Starting OpenCV detector node.')
     
+    print('starting rclpy init')
     rclpy.init(args=args)
+    print('rclpy init success')
+
+    print('creating object')
     image_projection = ObjectDetector()
+    print('object created')
     rclpy.spin(image_projection)
     image_projection.destroy_node()
     rclpy.shutdown()
