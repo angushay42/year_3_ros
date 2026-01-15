@@ -22,8 +22,24 @@ from visualization_msgs.msg import Marker
 import numpy as np
 import random
 from geometry_msgs.msg import Pose, Point, Quaternion, PoseArray
+from visualization_msgs.msg import MarkerArray
 
+class PotHole:
+    """Pothole helper class"""
+    pose: Pose
+    area: float
 
+    def __init__(self, pose: Pose = None, area: float=0.0):
+        self.pose = pose
+        self.area = area
+
+    def __hash__(self):
+        return hash((
+            self.pose.position.x,
+            self.pose.position.y,
+            self.pose.position.z,
+            self.area)
+        )
 
 class ObjectDetector(Node):
     camera_model = None
@@ -33,8 +49,11 @@ class ObjectDetector(Node):
     # global_frame = "base_link"  # unsure, is it world? map?
     global_frame = "map"    # it's map but navigation needs to be set up first
 
-    found_objs: list[Pose] = []     # should be hashmap
+    found_objs: list[Pose] = []     # could be hashmap
+    found_pots: dict[int, PotHole]
     obj_thresh = 0.2                # how accurate is this?
+    depth_thresh = 0.4              # in metres
+    area_thresh = 0.2               # in metres
 
     visualisation = True
     # aspect ration between color and depth cameras
@@ -49,7 +68,7 @@ class ObjectDetector(Node):
         self.rp = None  # todo temp variable for testing
         self.depth_val = -1
 
-        # subscribe to topic, when given data call callback
+        # ========================== Camera ===================================
         self.camera_info_sub = self.create_subscription(
             CameraInfo, 
             '/limo_camera/depth/camera_info',   # sensor_msgs/msg/CameraInfo
@@ -68,18 +87,14 @@ class ObjectDetector(Node):
             self.image_depth_callback, 
             10
         )
+        # ====================== end Camera ===================================
         
-        self.marker_pub = self.create_publisher(
-            Marker, 
-            '/limo/object_markers', 
-            10
-        )
 
-        # ============================ Pothole ============================
+        # ============================ Pothole ================================
         self.pothole_pub = self.create_publisher(
             PoseArray,
             '/pothole',
-            10
+            5       # think this is too fast
         )
         self.pothole_sub = self.create_subscription(
             PoseArray, 
@@ -87,16 +102,23 @@ class ObjectDetector(Node):
             self.pothole_callback,
             10
         )
-
         # ============================ end Pothole ============================
 
 
+        # ============================ Marker =================================
+        self.marker_pub = self.create_publisher(
+            MarkerArray, 
+            '/limo/object_markers', 
+            10
+        )
         self.marker_sub = self.create_subscription(
-            Marker,
+            MarkerArray,
             '/limo/object_markers',
             self.marker_callback,
             10
         )
+        # ============================ end Marker =============================
+
 
         self.tf_buffer = Buffer()
         self.tf_listener = TransformListener(self.tf_buffer, self)
@@ -114,10 +136,21 @@ class ObjectDetector(Node):
 
     def image_color_callback(self, data: Image):
         # wait for camera_model and depth image to arrive
-        if not all([self.camera_frame, self.camera_model, self.image_depth_ros]):
+        if not all([
+            self.camera_frame, 
+            self.camera_model, 
+            self.image_depth_ros, 
+        ]):
             return
-        self.get_logger().info('COLOUR CALLBACK')
-
+        
+        if not (
+            self.tf_buffer.can_transform(
+                self.global_frame, 
+                self.camera_frame,
+                rclpy.time.Time()
+            )
+        ):
+            return
         # covert images to open_cv
         try:
             image_color = self.bridge.imgmsg_to_cv2(data, "bgr8")
@@ -145,7 +178,6 @@ class ObjectDetector(Node):
         poses.header.stamp = rclpy.time.Time().to_msg()
 
         for cnt in contours:
-            self.get_logger().info('CHECKING CONTOURS')
             img_moments = cv2.moments(cnt)
             if img_moments["m00"] <= 0:
                 self.get_logger().warn("invalid contour {}".format(cnt))
@@ -159,10 +191,13 @@ class ObjectDetector(Node):
             # project ray from camera to pixel
             # turn into numpy array for element wise ops
             ray = np.array(self.camera_model.projectPixelTo3dRay(centre))
-            if ((0 < centre[0] <= self.image_depth_ros.width) 
+            if not ((0 < centre[0] <= self.image_depth_ros.width) 
                 and (0 < centre[1] <= self.image_depth_ros.height)
             ):
-                depth = image_depth[centre[1], centre[0]]   # flipped
+                continue
+            depth = image_depth[centre[1], centre[0]]   # flipped
+            if depth > self.depth_thresh:               # TODO testing if this filters
+                continue
 
             # scale unit vector (ray) with depth (in metres)
             ray *= depth
@@ -192,8 +227,8 @@ class ObjectDetector(Node):
                 poses.poses.append(global_pose)
             except Exception as e:
                 self.get_logger().warn(f"could not retrieve transform: {e}")
+                continue    # skip 
 
-        self.get_logger().info('Attempting publish...')
         self.pothole_pub.publish(poses)
 
         cv2.imshow("colour image", image_color)
@@ -202,13 +237,13 @@ class ObjectDetector(Node):
 
     def check_pose_exists(self, pose: Pose):
         """New object will return False. True if exists"""
-        self.get_logger().info(
-            "Objects:" + ("{}, "*len(self.found_objs)).format(
-                *[f"x: {x.position.x:2f}, y: {x.position.y:2f}" for x in self.found_objs]
-            )
-        )
+
+        """
+        possible alternative filters:
+        - distance
+        - area 
+        """
         for o in self.found_objs:
-            self.get_logger().info('Checking objects...')
             dist = np.sqrt(
                 ((o.position.x - pose.position.x)**2)
                 + ((o.position.y - pose.position.y)**2)
@@ -220,10 +255,11 @@ class ObjectDetector(Node):
 
     def pothole_callback(self, data: PoseArray):
         # filter poses based on some threshold
-        for num, pose in enumerate(data):
-            self.get_logger().info('checking pose:')
+        marr = MarkerArray()
+        
+        for num, pose in enumerate(data.poses):
             if self.check_pose_exists(pose):
-                return
+                continue
             self.get_logger().info('appending pose')
             self.found_objs.append(pose)
 
@@ -231,7 +267,7 @@ class ObjectDetector(Node):
             marker.header.frame_id = self.global_frame
             marker.type = Marker.SPHERE
             marker.action = Marker.ADD
-            marker.pose = data.pose
+            marker.pose = pose
             marker.scale.x = 0.1
             marker.scale.y = 0.1
             marker.scale.z = 0.1
@@ -239,12 +275,15 @@ class ObjectDetector(Node):
             marker.color.r = 1.0
             marker.color.g = 0.0
             marker.color.b = 0.0
-            marker.id = num
+            marker.id = len(self.found_objs)    # should be monotonic
+            marr.markers.append(marker)
         
-        self.marker_pub.publish(marker)
+        if not marr.markers:
+            return
+        self.marker_pub.publish(marr)
 
-    def marker_callback(self, data: Marker):
-        self.get_logger().warn('MARKER: {}'.format(data.id))
+    def marker_callback(self, data: MarkerArray):
+        self.get_logger().warn('MARKERs: {}'.format(data))
 
 
 def main(args=None):
