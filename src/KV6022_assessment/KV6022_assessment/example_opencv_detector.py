@@ -52,7 +52,8 @@ class ObjectDetector(Node):
     found_objs: list[Pose] = []     # could be hashmap
     found_pots: dict[int, PotHole]
     obj_thresh = 0.2                # how accurate is this?
-    depth_thresh = 0.4              # in metres
+    depth_thresh_min = 0.2          # in metres
+    depth_thresh_max = 0.6
     area_thresh = 0.2               # in metres
 
     visualisation = True
@@ -196,7 +197,9 @@ class ObjectDetector(Node):
             ):
                 continue
             depth = image_depth[centre[1], centre[0]]   # flipped
-            if depth > self.depth_thresh:               # TODO testing if this filters
+            if not (
+                self.depth_thresh_min < depth <= self.depth_thresh_max
+            ):
                 continue
 
             # scale unit vector (ray) with depth (in metres)
