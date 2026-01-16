@@ -1,3 +1,4 @@
+#! nav2_params.yaml
 amcl:
   ros__parameters:
     use_sim_time: False
@@ -43,9 +44,9 @@ amcl:
     always_reset_initial_pose: false
     first_map_only: false
     initial_pose:
-      x: 0.0
-      y: 0.0
-      z: 0.0
+      x: 0.00024134343782571469
+      y: -0.0017753760165535799
+      z: 0.14501890471127793
       yaw: 0.0
 
 map_server:
@@ -215,7 +216,11 @@ global_costmap:
       use_sim_time: True
       robot_radius: 0.10 # radius set and used, so no footprint points
       resolution: 0.02
-      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      plugins: [
+        "static_layer", 
+        "obstacle_layer", 
+        "inflation_layer"
+      ]
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -235,7 +240,7 @@ global_costmap:
           marking: True
           data_type: "LaserScan"
           inf_is_valid: false
-      static_layer:
+      static_layer: 
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
         enabled: true

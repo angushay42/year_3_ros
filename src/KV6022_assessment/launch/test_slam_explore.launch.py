@@ -1,19 +1,43 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
 from launch_ros.actions import Node, SetParameter
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
     ld = LaunchDescription()
 
-     # Specify the name of the package and path to map yaml file
     pkg_name = 'KV6022_assessment'
     map_subpath = 'maps/potholes_20mm.yaml'
     map_yaml_filepath = os.path.join(get_package_share_directory(pkg_name), map_subpath)
 
+    slam_params_file = os.path.join(get_package_share_directory(pkg_name),'params','slam.yaml')
+    explore_params_file = os.path.join(get_package_share_directory(pkg_name),'params','explore.yaml')
+   
+    slam_node = Node(
+        package='slam_toolbox',
+        executable='async_slam_toolbox_node',
+        name='slam',
+        parameters=[slam_params_file],
+    )
+
+    explore_node = Node(
+        package='explore_lite',     # is it m-explore?
+        executable='explore',       # full path needed?
+        name='explore_lite',
+        parameters=[explore_params_file]
+    )
+
+    detection_node = Node(
+        package=pkg_name,
+        executable='detector',
+        name='detector',
+        parameters=[]
+    )
+
+
+    # =========================================================================
+    # Copied from /limo_navigation.launch.py
+    # =========================================================================
 
     # map server node
     # Publishes a 2D occupancy grid based on a .pgm (and accompanying .yaml) file
@@ -119,14 +143,21 @@ def generate_launch_description():
         arguments=['-d', rviz_config_dir],
         parameters=[{'use_sim_time': True}],
         output='screen')
-
-
+    
+    # =========================================================================
+    # End /limo_navigation.launch.py
+    # =========================================================================
+    
     # Add actions to LaunchDescription
     ld.add_action(SetParameter(name='use_sim_time', value=True))
-    ld.add_action(node_map_server)
+    ld.add_action(slam_node)
+    ld.add_action(explore_node)
+    ld.add_action(detection_node)
+    
+    # ======================== nav2 ===========================================
+    # ld.add_action(node_map_server)
     # ld.add_action(node_amcl)
-    ld.add_action(node_lifecycle_manager)
-
+    # ld.add_action(node_lifecycle_manager)
     ld.add_action(controller_server)
     ld.add_action(planner_server)
     ld.add_action(behavior_server)
@@ -134,6 +165,7 @@ def generate_launch_description():
     ld.add_action(waypoint_follower)
     ld.add_action(node_lifecycle_manager2)
 
+    # ============================ rviz =======================================
     ld.add_action(start_rviz2)
-   
+
     return ld

@@ -15,6 +15,16 @@ def generate_launch_description():
     map_yaml_filepath = os.path.join(get_package_share_directory(pkg_name), map_subpath)
 
 
+    detection_node = Node(
+        package=pkg_name,
+        executable='detector',
+        name='detector',
+        parameters=[]
+    )
+
+    # FROM /launch/limo_navigation.launch.py
+    # ============================= Nav2 ======================================
+    
     # map server node
     # Publishes a 2D occupancy grid based on a .pgm (and accompanying .yaml) file
     node_map_server = Node(
@@ -111,7 +121,15 @@ def generate_launch_description():
         parameters=[{'autostart': True}, {'node_names': lifecycle_nodes}],
     )
 
-    rviz_config_dir = os.path.join(get_package_share_directory(pkg_name),'rviz','limo_navigation.rviz')
+    # =================================== end Nav2 ============================
+
+
+    rviz_config_dir = os.path.join(
+        get_package_share_directory(pkg_name),
+        'rviz',
+        'demo.rviz'
+        # "limo_navigation.rviz"
+    )
     start_rviz2 = Node(
         package='rviz2',
         executable='rviz2',
@@ -120,11 +138,12 @@ def generate_launch_description():
         parameters=[{'use_sim_time': True}],
         output='screen')
 
+    ld.add_action(detection_node)
 
     # Add actions to LaunchDescription
     ld.add_action(SetParameter(name='use_sim_time', value=True))
     ld.add_action(node_map_server)
-    # ld.add_action(node_amcl)
+    ld.add_action(node_amcl)
     ld.add_action(node_lifecycle_manager)
 
     ld.add_action(controller_server)

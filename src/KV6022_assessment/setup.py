@@ -30,10 +30,11 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'example_opencv_detector = KV6022_assessment.example_opencv_detector:main',
+            'detector = KV6022_assessment.detector:main',
             'example_waypoint_follower = KV6022_assessment.example_waypoint_follower:main',
             'example_nav_through_poses = KV6022_assessment.example_nav_through_poses:main',
             'example_nav_to_pose = KV6022_assessment.example_nav_to_pose:main',
+            'wp_detector = KV6022_assessment.waypoint_detector:main'
         ],
     },
 )
