@@ -53,9 +53,15 @@ class WaypointDetector(Node):
                         "x": float(marker.pose.position.x),
                         "y": float(marker.pose.position.y),
                         "z": float(marker.pose.position.z)
+                    },
+                    "orientation": {
+                        "x": float(marker.pose.orientation.x),
+                        "y": float(marker.pose.orientation.z),
+                        "z": float(marker.pose.orientation.y),
+                        "w": float(marker.pose.orientation.w),
                     }
                 }
-        with open('waypoints.txt', "a") as f:
+        with open('waypoints.txt', "w") as f:
             f.write(json.dumps(d, indent=2))
 
 

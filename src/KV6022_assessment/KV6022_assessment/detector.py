@@ -23,6 +23,7 @@ import numpy as np
 import random
 from geometry_msgs.msg import Pose, Point, Quaternion, PoseArray
 from visualization_msgs.msg import MarkerArray
+import json
 
 class PotHole:
     """Pothole helper class"""
@@ -265,6 +266,27 @@ class ObjectDetector(Node):
                 continue
             self.get_logger().info('appending pose')
             self.found_objs.append(pose)
+            with open('pothole_results.json', "a") as f:
+                f.write(
+                    json.dumps({
+                        len(self.found_objs): {
+                            "position": {
+                                "x": pose.position.x,
+                                "y": pose.position.y,
+                                "z": pose.position.z,
+                            }, 
+                            "orientation": {
+                                "x": pose.orientation.x,
+                                "y": pose.orientation.y,
+                                "z": pose.orientation.z,
+                                "w": pose.orientation.w,
+                            }
+                        }
+                    })
+                )
+
+                
+                
 
             marker = Marker()
             marker.header.frame_id = self.global_frame

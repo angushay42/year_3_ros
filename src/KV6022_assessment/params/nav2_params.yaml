@@ -63,7 +63,7 @@ planner_server:
       plugin: 'nav2_navfn_planner/NavfnPlanner'
       use_astar: True
       allow_unknown: True
-      tolerance: 1.0
+      tolerance: 0.5
 
 bt_navigator:
   ros__parameters:
@@ -161,8 +161,8 @@ controller_server:
       movement_time_allowance: 10.0
     goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1
+      yaw_goal_tolerance: 0.2
       stateful: True
     # DWB controller parameters
     FollowPath:
@@ -170,18 +170,18 @@ controller_server:
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.26
+      max_vel_x: 0.1
       max_vel_y: 0.0
-      max_vel_theta: 1.0
+      max_vel_theta: 1.5
       min_speed_xy: 0.0
-      max_speed_xy: 0.26
+      max_speed_xy: 0.15
       min_speed_theta: 0.0
-      acc_lim_x: 2.5
+      acc_lim_x: 1.5
       acc_lim_y: 0.0
-      acc_lim_theta: 3.2
-      decel_lim_x: -2.5
+      acc_lim_theta: 5.0
+      decel_lim_x: -1.5
       decel_lim_y: 0.0
-      decel_lim_theta: -3.2
+      decel_lim_theta: -5.0
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
@@ -189,7 +189,7 @@ controller_server:
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
@@ -249,7 +249,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         enabled: true
-        inflation_radius: 0.10
+        inflation_radius: 0.025
         cost_scaling_factor: 1.0
         inflate_unknown: false
         inflate_around_unknown: true

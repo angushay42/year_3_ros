@@ -34,7 +34,8 @@ setup(
             'example_waypoint_follower = KV6022_assessment.example_waypoint_follower:main',
             'example_nav_through_poses = KV6022_assessment.example_nav_through_poses:main',
             'example_nav_to_pose = KV6022_assessment.example_nav_to_pose:main',
-            'wp_detector = KV6022_assessment.waypoint_detector:main'
+            'wp_detector = KV6022_assessment.waypoint_detector:main',
+            'demo_wp = KV6022_assessment.demo_waypoint:main'
         ],
     },
 )
